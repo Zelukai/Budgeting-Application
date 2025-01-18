@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 class Envelope: 
     def __init__(self, name, parent, allocation): 
         self.name = name
@@ -18,3 +19,6 @@ class Envelope:
                 pass 
                 # need to look at documentation to write this
     
+=======
+class envelope:
+>>>>>>> eb8543b7b852b22ae81faf1b4e7ddb4da746c222
