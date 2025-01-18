@@ -1,9 +1,9 @@
 import csv
 
 class Envelope: 
-    def __init__(self, name, parent, allocation): 
+    def __init__(self, name, allocation, parent=None): 
         self.name = name
-        self.parent = parent # would pass in the name of the parent Envelope object
+        self.parent = parent 
         self.allocation = allocation 
         self.exp_running_t =  allocation# upon creation, it will call the record function 
         self.record() 
@@ -17,4 +17,9 @@ class Envelope:
             writer = csv.writer(file)
             writer.writerow(headersList)
 
-        
+        # update user
+        print(f"Envelope {self.name} was created") 
+        print(f"Funds allocated: {self.allocation}")
+        print(f"Current total: {self.exp_running_t}")
+
+    
