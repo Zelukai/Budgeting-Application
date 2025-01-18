@@ -1,3 +1,5 @@
+import csv
+
 class Envelope: 
     def __init__(self, name, parent, allocation): 
         self.name = name
@@ -7,13 +9,12 @@ class Envelope:
         self.record() 
     
     def record(self): 
-        data = [
-            []
-        ]
-        
-        # opening file then writing to it
+
+        # list of the column headers
+        headersList = ["Name", "Allocation", "Exp_Running_T"]
         csv_file_path = f'{self.name}.csv'
-        with open(csv_file_path, mode='w') as file: 
-            for row in data: 
-                pass 
-                # need to look at documentation to write this
+        with open(csv_file_path, mode='w', newline="") as file:
+            writer = csv.writer(file)
+            writer.writerow(headersList)
+
+        
