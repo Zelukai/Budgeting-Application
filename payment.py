@@ -2,7 +2,7 @@ import envelope
 import datetime
 
 class Payment: 
-    def __init__(self, amount=0, date = datetime.now(), recurring = False, projection = False, envelope: Envelope):
+    def __init__(self, amount=0, date = datetime.now(), recurring = False, projection = False, envelope = None):
         self.amount = amount
         self.date = date
         self.recurring = recurring
