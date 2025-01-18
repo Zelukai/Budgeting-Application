@@ -15,9 +15,8 @@ class Envelope:
         # opening file then writing to it
         csv_file_path = f'{self.name}.csv'
         with open(csv_file_path, mode='w') as file: 
-            for row in data: 
-                pass 
-                # need to look at documentation to write this
+            # write to headers (column labels)
+            
     
 =======
 class envelope:
