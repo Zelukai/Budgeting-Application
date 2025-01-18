@@ -1,7 +1,7 @@
 import envelope
 
 class Payment: 
-    def __init__(self, amount=0, recurring = False, projection = False, envelope: Envelope):
+    def __init__(self, amount=0, recurring = False, projection = False, envelope = None):
         self.amount = amount
         self.recurring = recurring
         self.projection = projection
