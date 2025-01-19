@@ -100,8 +100,8 @@ def main():
     print("Welcome to the Busy Budgeter")
     print("What would you like to do? \n 1. Create an budgeting envelope \n 2. Enter a new payment \n 3. Merge csv Files \n 4. Exit Program")
     cLinput = input()
-    while cLinput not in ('1', '2', '3','4'):
-        print("Invalid option! Please enter a valid option (1, 2, 3, or 4)")
+    while cLinput not in ('1', '2', '3'):
+        print("Invalid option! Please enter a valid option (1, 2, or 3)")
         cLinput = input()
     match_input(cLinput)
 
