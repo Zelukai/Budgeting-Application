@@ -1,4 +1,3 @@
-import pandas
 import datetime
 import envelope
 
@@ -14,7 +13,19 @@ def main():
         while cLinput not in ('1', '2', '3'):
             print("Invalid option! Please enter a valid option (1, 2, or 3)")
             cLinput = input()
-        break
+        match_input(cLinput)
+    
+
 
 if __name__ == "__main__":
     main()
+
+
+def match_input(cLinput=3):
+    match cLinput:
+        case 1:
+            print("Do something")
+        case 2:
+            print("Do something")
+        case 3:
+            print("Thank you for using this Busy Budgeter! This program is now ending...")
