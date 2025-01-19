@@ -2,7 +2,7 @@ import envelope
 import csv
 
 class Payment: 
-    def __init__(self, amount=0, date = datetime.today(), recurring = False, projection = False, envelope = None):
+    def __init__(self, amount=0, date = datetime.today(), recurring = False, projection = False, envelope = 'total'):
         self.amount = amount
         self.date = date
         self.recurring = recurring
