@@ -19,8 +19,6 @@ class Payment:
             writer.writerow(entryList)
 
         # update user
-        print(f"Envelope {self.name} was created") 
-        print(f"Funds allocated: {self.allocation}")
-        print(f"Current total: {self.exp_running_t}")
+        print(f"Payment of ${self.amount} was created")
 
     
