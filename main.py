@@ -5,10 +5,24 @@ import payment
 
 #Lets create a basic UI
 
-            
-            
+def formatPayment(input):
+    formattedInput = f"{float(input):.2f}"
+    return formattedInput
 
 
+def match_decimal(input_value):
+    input_value = str(input_value)
+    match input_value:
+        case _ if '.' in input_value:
+            before_decimal, after_decimal = input_value.split('.', 1)
+            if len(after_decimal) > 2:
+                print("Invalid input. More than two digits after the decimal.")
+                input_value = input("Try again: ")
+                return match_decimal(input_value)
+            return formatPayment(input_value)
+        case _:
+            return formatPayment(input_value)            
+            
 
 
 def match_input(cLinput=3):
