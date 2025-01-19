@@ -14,7 +14,7 @@ class Payment:
     def record(self):
         entryList = [self.amount, self.date, self.envelope]
         csv_file_path = f'{self.envelope}.csv'
-        with open(csv_file_path, mode='w+', newline="") as file:
+        with open(csv_file_path, mode='a+', newline="") as file:
             writer = csv.writer(file)
             writer.writerow(entryList)
 
