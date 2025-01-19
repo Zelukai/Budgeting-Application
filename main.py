@@ -1,4 +1,3 @@
-import pandas
 import datetime
 import envelope
 
