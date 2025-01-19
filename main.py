@@ -5,7 +5,7 @@ import envelope
 
 #Lets create a basic UI
 
-total = Envelope("origin", 5000)
+total = envelope.Envelope("origin", 5000)
 
 while True:
     print("Welcome to the Busy Budgeter")
@@ -14,4 +14,4 @@ while True:
     while (cLinput != 1 or cLinput != 2 or cLinput != 3):
         print("Invalid option! Please enter a valid option (1, 2, or 3)")
         cLinput = input()
-    
+    break
