@@ -45,9 +45,7 @@ def create_envelope():
 def create_payment():
     name = input("Enter the name of payment's Envelope: ")
     allocation = match_decimal(input(f"enter allocation for {name}: "))
-    new_payment = payment.Payment(allocation, date.today(), False, False, name)
-    new_payment.record()
-    
+    new_payment = payment.Payment(allocation, date.today(), False, False, name)    
 
 
 total = envelope.Envelope("total", 5000)
