@@ -73,12 +73,11 @@ def match_input(cLinput=3):
     match cLinput:
         case '1':
             create_envelope()
+            base_directory = "envelopes"
+            update_csv_files_deepest_first(base_directory)
         case '2':
             create_payment()
         case '3':
-            base_directory = "envelopes"
-            update_csv_files_deepest_first(base_directory)
-        case '4':
             print("Thank you for using this Busy Budgeter! This program is now ending...")
 
 def create_envelope():
