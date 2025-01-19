@@ -1,6 +1,6 @@
 import os
 import csv
-from envelope import Envelope
+from envelope import Envelope  # Correct import for the Envelope class
 from datetime import date
 
 def create_envelope():
@@ -35,7 +35,6 @@ def create_envelope():
     except ValueError:
         print("Invalid allocation amount! Please enter a valid integer.")
 
-
 def update_csv_files_deepest_first(base_dir="envelopes"):
     """Merge CSV data starting from the deepest folders."""
     all_folders = []
@@ -67,6 +66,8 @@ def update_csv_files_deepest_first(base_dir="envelopes"):
 
 def main():
     """Main program loop."""
+    Envelope.load_envelopes_from_filesystem()
+
     while True:
         print("\nWhat would you like to do?")
         print("1. Create a budgeting envelope")

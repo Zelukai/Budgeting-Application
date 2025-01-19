@@ -48,3 +48,12 @@ class Envelope:
             writer.writerow([self.allocation, date.today(), self.folder_path])
 
         print(f"Envelope '{self.name}' created successfully in '{self.folder_path}'.")
+
+    @classmethod
+    def load_envelopes_from_filesystem(cls, base_dir="envelopes"):
+        """Scan the envelopes directory and rebuild the envelope names list."""
+        cls.envelope_names = []
+        for root, dirs, files in os.walk(base_dir):
+            for dir_name in dirs:
+                # Add each folder as an Envelope name
+                cls.envelope_names.append(dir_name)
