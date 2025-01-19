@@ -4,61 +4,117 @@ import payment
 from datetime import date
 import os 
 
-class Envelope:
+# class Envelope: 
+#     envelope_names = []
+#     def __init__(self, name:str, allocation:int, parent=None, children=[]): 
+#         if isinstance(parent, str):
+#             # Convert parent name to Envelope object if it's a string
+#             for env in Envelope.envelope_names:
+#                 if env.name == parent:
+#                     parent = env
+#                     break
+#             else:
+#                 raise ValueError(f"Parent envelope '{parent}' not found.")
+
+#         self.name = name
+#         self.parent = parent 
+#         self.allocation = allocation 
+#         self.children = children
+#         self.expense_total = 0 
+#         # creating folder and nesting it in envelopes
+#         # nested_dir = os.path.join("envelopes", self.name)
+#         # os.makedirs(nested_dir, exist_ok=True)
+#         # self.folder_path = nested_dir
+
+#         if parent: 
+#             if isinstance(parent, Envelope) and parent.name == self.name: # if the envelope is nested, do the following
+#                 self.parent = parent
+#                 assert self.allocation <= parent.allocation, f"Child envelope allocation {self.allocation} exceeds parent allocation {parent.allocation}"
+#                 parent.add_child(self)
+#                 nested_dir = os.path.join("envelopes", parent.name, self.name) # creating the proper file structure: envelopes\parent.name\self.name
+
+#             else: 
+#                 raise ValueError(f"Parent envelope {parent.name} not valid")
+#         else: 
+#             nested_dir = os.path.join("envelopes", self.name) # since the first doesn't work, it means we are the FIRST folder so its just envelopes\self.name
+#             # self.parent = None
+#         os.makedirs(nested_dir, exist_ok=True) # actually makes the directy with the proper path
+#         self.folder_path = nested_dir         
+
+#         Envelope.envelope_names.append(self.name)
+
+#         # upon creation, it will call the record function 
+#         self.record() 
+
+class Envelope: 
     envelope_names = []
 
-    def __init__(self, name: str, allocation: int, parent=None, children=None):
+    def __init__(self, name: str, allocation: int, parent=None, children=[]): 
+        # Convert parent name to an Envelope object if it's a string
+        if isinstance(parent, str):
+            parent_found = None
+            for env in Envelope.envelope_names:
+                if env.name == parent:
+                    parent_found = env
+                    break
+            if not parent_found:
+                raise ValueError(f"Parent envelope '{parent}' not found.")
+            parent = parent_found
+
         self.name = name
         self.parent = parent
         self.allocation = allocation
-        self.children = children or []  # Avoid mutable default arguments
-        self.exp_running_t = allocation  # Initialize remaining allocation
+        self.children = children
+        self.expense_total = 0
 
-        # Determine the folder path
-        if parent:
-            # Check if the parent exists
-            if parent not in Envelope.envelope_names:
-                raise ValueError(f"Parent envelope '{parent}' does not exist.")
-            # Create the nested folder path
-            self.folder_path = os.path.join("envelopes", parent, self.name)
+        # Create folder structure for nested envelopes
+        if parent: 
+            # Validate parent allocation
+            assert self.allocation <= parent.allocation, (
+                f"Child envelope allocation {self.allocation} exceeds parent allocation {parent.allocation}"
+            )
+            parent.add_child(self)  # Add this envelope as a child of the parent
+            nested_dir = os.path.join("envelopes", parent.folder_path, self.name)  # Nested path
         else:
-            # Root folder for top-level envelope
-            self.folder_path = os.path.join("envelopes", self.name)
+            nested_dir = os.path.join("envelopes", self.name)  # Root path
 
+        # Ensure the directory exists
+        os.makedirs(nested_dir, exist_ok=True)
+        self.folder_path = nested_dir
+
+        # Register the envelope
+        Envelope.envelope_names.append(self)
+
+        # Automatically record envelope data upon creation
+        self.record()
+
+
+    def add_child(self, child): 
+        self.children.append(child)
+    
+
+    def record(self): 
         # Ensure the folder structure exists
         os.makedirs(self.folder_path, exist_ok=True)
 
-        # Add this envelope's name to the global list
-        Envelope.envelope_names.append(self.name)
+        # Define the list of column headers
+        headersList = ["Amount", "Date", "Envelope"]
 
-        # Automatically record the envelope's details in a CSV
-        self.record()
+        # Create the full path for the CSV file
+        csv_file_path = os.path.join(self.folder_path, f'{self.name}.csv')
 
-    def add_child(self, child):
-        """Add a child envelope to this envelope."""
-        self.children.append(child)
-
-    def record(self):
-        """Record envelope details in a CSV file."""
-        # Define the CSV file path
-        csv_file_path = os.path.join(self.folder_path, f"{self.name}.csv")
-
-        # List of CSV headers
-        headersList = ["Amount","Date","Envelope"]
-
-        # Write to the CSV file
-        file_exists = os.path.exists(csv_file_path)
-        with open(csv_file_path, mode="a" if file_exists else "w", newline="") as file:
+        # Open the CSV file and write the headers
+        with open(csv_file_path, mode='w+', newline="") as file:
             writer = csv.writer(file)
-            if not file_exists:
-                writer.writerow(headersList)  # Write headers only if the file is new
-            writer.writerow([
-            self.allocation,  # Amount
-            date.today(),     # Date
-            self.folder_path  # Folder path (Envelope)
-        ])
+            writer.writerow(headersList)
+        
+        # Record the initial allocation as a payment
+        allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
+        allocation_pay.record()
 
-        # Display user feedback
-        print(f"Envelope '{self.name}' was created in '{self.folder_path}'.")
+        # Update user
+        print(f"Envelope {self.name} was created in folder '{self.folder_path}'") 
         print(f"Funds allocated: {self.allocation}")
+        
+
     

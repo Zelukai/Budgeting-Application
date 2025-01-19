@@ -1,50 +1,58 @@
-from datetime import date
-import envelope
-import payment
 import os
+import csv
+from datetime import date
 
+class Envelope:
+    envelope_names = []
 
-#Lets create a basic UI
+    def __init__(self, name, allocation, parent=None):
+        self.name = name
+        self.allocation = allocation
+        self.parent = parent
+        self.children = []
 
-def formatPayment(input):
-    formattedInput = "{:.2f}".format(float(input))
-    return formattedInput
+        # Build the folder path
+        self.folder_path = self.build_folder_path()
+        os.makedirs(self.folder_path, exist_ok=True)
 
+        # Add to parent if applicable
+        if parent:
+            parent.add_child(self)
 
-def match_decimal(input_value):
-    input_value = str(input_value)
-    match input_value:
-        case _ if '.' in input_value:
-            before_decimal, after_decimal = input_value.split('.', 1)
-            if len(after_decimal) > 2:
-                print("Invalid input. More than two digits after the decimal.")
-                input_value = input("Try again: ")
-                return match_decimal(input_value)
-            return formatPayment(input_value)
-        case _:
-            return formatPayment(input_value)            
-            
+        # Register the envelope
+        Envelope.envelope_names.append(self)
 
-def match_input(cLinput=3):
-    match cLinput:
-        case '1':
-            create_envelope()
-        case '2':
-            create_payment()
-        case '3':
-            print("Thank you for using this Busy Budgeter! This program is now ending...")
+        # Automatically record to CSV
+        self.record()
+
+    def build_folder_path(self):
+        """Build the folder path for the envelope."""
+        if self.parent:
+            return os.path.join(self.parent.folder_path, self.name)
+        return os.path.join("envelopes", self.name)
+
+    def add_child(self, child):
+        """Add a child envelope."""
+        self.children.append(child)
+
+    def record(self):
+        """Write envelope details to a CSV file."""
+        csv_file_path = os.path.join(self.folder_path, f"{self.name}.csv")
+        headers = ["Amount", "Date", "Envelope"]
+
+        file_exists = os.path.exists(csv_file_path)
+        with open(csv_file_path, mode="a" if file_exists else "w", newline="") as file:
+            writer = csv.writer(file)
+            if not file_exists:
+                writer.writerow(headers)  # Write headers only if new
+            writer.writerow([self.allocation, date.today(), self.folder_path])
+
+        print(f"Envelope '{self.name}' created successfully in '{self.folder_path}'.")
+
+# Utility Functions
 
 def create_envelope():
-    """Prompt the user to create a new envelope using depth-first recursion."""
-    def ensure_parent_exists(parent_path):
-        """Recursively ensure all parent folders exist."""
-        if not os.path.exists(parent_path):
-            # Get the grandparent path and ensure it exists first
-            grandparent_path = os.path.dirname(parent_path)
-            if grandparent_path and grandparent_path != "envelopes":
-                ensure_parent_exists(grandparent_path)
-            os.makedirs(parent_path, exist_ok=True)
-
+    """Prompt the user to create a new envelope."""
     name = input("Enter the name of the new envelope: ").strip()
     try:
         allocation = int(input(f"Enter allocation for '{name}': "))
@@ -52,50 +60,76 @@ def create_envelope():
             print("Allocation must be a positive number.")
             return
 
-        # Check if the envelope is nested
+        # Ask if this envelope is nested
         is_nested = input("Is this envelope nested inside another? (yes/no): ").strip().lower()
+        parent_envelope = None
+
         if is_nested == "yes":
-            parent_name = input("Enter the name of the parent envelope (e.g., Master/under): ").strip()
-            
-            # Build the parent folder path
-            parent_folder = os.path.abspath(os.path.join("envelopes", *parent_name.split("/")))
-            ensure_parent_exists(parent_folder)  # Ensure the parent folder exists
+            parent_name = input("Enter the name of the parent envelope: ").strip()
 
-            # Build the path for the new envelope
-            folder_path = os.path.join(parent_folder, name)
-        else:
-            # Create a root-level folder
-            folder_path = os.path.abspath(os.path.join("envelopes", name))
-            ensure_parent_exists(folder_path)  # Ensure the root folder exists
+            # Locate the parent envelope
+            for env in Envelope.envelope_names:
+                if env.name == parent_name:
+                    parent_envelope = env
+                    break
 
-        # Create the new envelope's folder
-        os.makedirs(folder_path, exist_ok=True)
+            if not parent_envelope:
+                print(f"Parent envelope '{parent_name}' not found. Please create it first.")
+                return
 
-        # Call the Envelope class to handle additional logic
-        new_envelope = envelope.Envelope(name=name, allocation=allocation)
+        # Create the envelope
+        Envelope(name=name, allocation=allocation, parent=parent_envelope)
 
-        print(f"Envelope '{name}' created successfully in '{folder_path}'.")
     except ValueError:
         print("Invalid allocation amount! Please enter a valid integer.")
 
+def update_csv_files_deepest_first(base_dir="envelopes"):
+    """Merge CSV data starting from the deepest folders."""
+    all_folders = []
+    for root, dirs, files in os.walk(base_dir):
+        all_folders.append(root)
 
-def create_payment():
-    name = input("Enter the name of payment's Envelope: ")
-    allocation = match_decimal(input(f"enter allocation for {name}: "))
-    new_payment = payment.Payment(allocation, date.today(), False, False, name)    
+    # Sort folders by depth (deepest first)
+    all_folders.sort(key=lambda path: path.count(os.sep), reverse=True)
 
+    for folder in all_folders:
+        csv_files = [f for f in os.listdir(folder) if f.endswith('.csv')]
+        combined_data = []
+
+        # Read and combine CSV data
+        for csv_file in csv_files:
+            file_path = os.path.join(folder, csv_file)
+            with open(file_path, mode="r") as file:
+                reader = csv.reader(file)
+                next(reader)  # Skip header
+                combined_data.extend(list(reader))
+
+        # Save the combined data back to each CSV file
+        for csv_file in csv_files:
+            file_path = os.path.join(folder, csv_file)
+            with open(file_path, mode="w", newline="") as file:
+                writer = csv.writer(file)
+                writer.writerow(["Amount", "Date", "Envelope"])
+                writer.writerows(combined_data)
 
 def main():
-    print("Welcome to the Busy Budgeter")
-    print("What would you like to do? \n 1. Create an budgeting envelope \n 2. Enter a new payment \n 3. Exit Program")
-    cLinput = input()
-    while cLinput not in ('1', '2', '3'):
-        print("Invalid option! Please enter a valid option (1, 2, or 3)")
-        cLinput = input()
-    match_input(cLinput)
+    """Main program loop."""
+    while True:
+        print("\nWhat would you like to do?")
+        print("1. Create a budgeting envelope")
+        print("2. Merge CSV files")
+        print("3. Exit")
+        choice = input("> ").strip()
 
+        if choice == "1":
+            create_envelope()
+        elif choice == "2":
+            update_csv_files_deepest_first()
+        elif choice == "3":
+            print("Goodbye!")
+            break
+        else:
+            print("Invalid choice. Please try again.")
 
 if __name__ == "__main__":
     main()
-
-
