@@ -18,18 +18,18 @@ class Envelope:
         # self.folder_path = nested_dir
 
         if parent: 
-            if isinstance(parent, Envelope) and parent.name == self.name: 
+            if isinstance(parent, Envelope) and parent.name == self.name: # if the envelope is nested, do the following
                 self.parent = parent
                 parent.add_child(self)
-                nested_dir = os.path.join("envelopes", parent.name, self.name)
+                nested_dir = os.path.join("envelopes", parent.name, self.name) # creating the proper file structure: envelopes\parent.name\self.name
 
             else: 
                 raise ValueError(f"Parent envelope {parent.name} not valid")
         else: 
-            nested_dir = os.path.join("envelopes", self.name)
+            nested_dir = os.path.join("envelopes", self.name) # since the first doesn't work, it means we are the FIRST folder so its just envelopes\self.name
             # self.parent = None
-        os.makedirs(nested_dir, exist_ok=True)
-        self.folder_path = nested_dir
+        os.makedirs(nested_dir, exist_ok=True) # actually makes the directy with the proper path
+        self.folder_path = nested_dir         
 
         Envelope.envelope_names.append(self.name)
 
