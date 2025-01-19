@@ -22,7 +22,7 @@ class Envelope:
             writer.writerow(headersList)
         
         allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
-        allocation_pay.payment.record()
+        allocation_pay.record()
 
         # update user
         print(f"Envelope {self.name} was created") 
