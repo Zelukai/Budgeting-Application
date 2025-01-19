@@ -1,7 +1,7 @@
 import csv
 
 class Envelope: 
-    def __init__(self, name, allocation, parent=None, children=[]): 
+    def __init__(self, name:str, allocation:int, parent=None, children=[]): 
         self.name = name
         self.parent = parent 
         self.allocation = allocation 
