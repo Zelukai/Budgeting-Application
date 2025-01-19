@@ -1,5 +1,6 @@
 import datetime
 import envelope
+import payment
 
 
 #Lets create a basic UI
@@ -13,7 +14,7 @@ def match_input(cLinput=3):
         case '1':
             create_envelope()
         case '2':
-            print("Do something")
+            create_payment()
         case '3':
             print("Thank you for using this Busy Budgeter! This program is now ending...")
 
@@ -24,6 +25,13 @@ def create_envelope():
         new_envelope = envelope.Envelope(name, allocation) #could be used for later
     except ValueError:
         print("Invalid allocation amount! Please enter amount.")
+        
+def create_payment():
+    name = input("Enter the name of payment's Envelope: ")
+    allocation = int(input(f"enter allocation for {name}: "))
+    new_payment = payment.Payment(allocation, datetime.today(), False, False, name)
+    new_payment.record()
+    
 
 
 total = envelope.Envelope("total", 5000)
