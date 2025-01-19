@@ -20,6 +20,7 @@ class Envelope:
         if parent: 
             if isinstance(parent, Envelope) and parent.name == self.name: # if the envelope is nested, do the following
                 self.parent = parent
+                assert self.allocation <= parent.allocation, f"Child envelope allocation {self.allocation} exceeds parent allocation {parent.allocation}"
                 parent.add_child(self)
                 nested_dir = os.path.join("envelopes", parent.name, self.name) # creating the proper file structure: envelopes\parent.name\self.name
 
