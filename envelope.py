@@ -4,13 +4,29 @@ import payment
 from datetime import date
 
 class Envelope: 
+    envelope_names = []
     def __init__(self, name:str, allocation:int, parent=None, children=[]): 
         self.name = name
         self.parent = parent 
         self.allocation = allocation 
         self.children = children
         self.exp_running_t =  allocation# upon creation, it will call the record function 
+
+        if parent: 
+            if isinstance(parent, Envelope) and parent.name == self.name: 
+                self.parent = parent
+                parent.add_child(self)
+            else: 
+                raise ValueError(f"Parent envelope {parent.name} not valid")
+        else: 
+            self.parent = None
+
+        Envelope.envelope_names.append(self.name)
         self.record() 
+
+
+    def add_child(self, child): 
+        self.children.append(child)
     
     def record(self): 
 
