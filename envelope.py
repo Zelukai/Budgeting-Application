@@ -61,9 +61,6 @@ class Envelope:
         # Record the initial allocation as a payment
         allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
 
-        #fix allocation as subtraction from parent
-        # the_parent = main.find(self.name)
-        # the_parent, old = the_parent.rsplit('/', 1)
         the_parent = main.find(self.parent)
         allocation_balance = payment.Payment(-self.allocation, date.today(), False, False, self.parent)
         
