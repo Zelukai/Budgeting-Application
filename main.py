@@ -6,7 +6,7 @@ import payment
 #Lets create a basic UI
 
 def formatPayment(input):
-    formattedInput = f"{float(input):.2f}"
+    formattedInput = "{:.2f}".format(float(input))
     return formattedInput
 
 
@@ -44,7 +44,7 @@ def create_envelope():
         
 def create_payment():
     name = input("Enter the name of payment's Envelope: ")
-    allocation = int(input(f"enter allocation for {name}: "))
+    allocation = match_decimal(input(f"enter allocation for {name}: "))
     new_payment = payment.Payment(allocation, date.today(), False, False, name)
     new_payment.record()
     
