@@ -2,6 +2,7 @@ import csv
 import datetime
 import payment
 from datetime import date
+import os 
 
 class Envelope: 
     envelope_names = []
