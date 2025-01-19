@@ -19,9 +19,9 @@ def create_envelope():
     name = input("Enter the name of new envelope: ")
     try:
         allocation = int(input(f"enter allocation for {name}: "))
-        new_envelope = envelope.Envelope(name, allocation)
+        new_envelope = envelope.Envelope(name, allocation) #could be used for later
     except ValueError:
-        print("Invalid allocation amount! Please enter a valid integer.")
+        print("Invalid allocation amount! Please enter amount.")
 
 
 total = envelope.Envelope("total", 5000)
