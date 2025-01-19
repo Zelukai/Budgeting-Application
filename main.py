@@ -1,8 +1,11 @@
 import pandas
 import datetime
+import envelope
 
 
 #Lets create a basic UI
+
+total = Envelope("origin", 5000)
 
 while True:
     print("Welcome to the Busy Budgeter")
