@@ -48,15 +48,20 @@ class Envelope:
 
         # Define the list of column headers
         headersList = ["Amount", "Date", "Envelope"]
-
+        statsHeadersList = ['NetTotal', 'TotalExpenses']
         # Create the full path for the CSV file
         csv_file_path = os.path.join(self.folder_path, f'{self.name}.csv')
+        stats_csv_file_path = os.path.join(self.folder_path, f'stats_{self.name}.csv')
 
         # Open the CSV file and write the headers
         with open(csv_file_path, mode='w+', newline="") as file:
             writer = csv.writer(file)
             writer.writerow(headersList)
         
+        with open(stats_csv_file_path, mode='w+', newline="") as statsfile:
+            stats_writer = csv.writer(statsfile)
+            stats_writer.writerow(statsHeadersList)
+
         # Record the initial allocation as a payment
         allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
         allocation_pay.record()
