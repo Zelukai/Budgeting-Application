@@ -1,6 +1,8 @@
 import envelope
 from datetime import date
 import csv
+import main
+import os
 
 class Payment: 
     def __init__(self, amount=0.00, date = date.today(), recurring = False, projection = False, envelope = 'total'):
@@ -11,13 +13,16 @@ class Payment:
         self.envelope = envelope
         self.record()
     def record(self):
-        import os
+        
+        print('running record')
 
+        file_path = main.find(self.envelope) 
+        
         entryListPayments = [self.amount, self.date, self.envelope]
-        csv_file_path = f'{self.envelope}.csv'
+        csv_file_path = os.path.join(file_path, f'{self.envelope}.csv')
 
         amountToAdd = float(self.amount)
-        stats_csv_file_path = f'stats_{self.envelope}.csv'
+        stats_csv_file_path = os.path.join(file_path, f'stats_{self.envelope}.csv')
 
         # Write payment entry to the payment CSV
         with open(csv_file_path, mode='a+', newline="") as file:

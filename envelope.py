@@ -3,6 +3,7 @@ import datetime
 import payment
 from datetime import date
 import os 
+import main
 
 class Envelope: 
     envelope_names = []
@@ -17,20 +18,18 @@ class Envelope:
         # os.makedirs(nested_dir, exist_ok=True)
         # self.folder_path = nested_dir
 
-        if parent: 
-            if isinstance(parent, Envelope) and parent.name == self.name: # if the envelope is nested, do the following
-                self.parent = parent
-                assert self.allocation <= parent.allocation, f"Child envelope allocation {self.allocation} exceeds parent allocation {parent.allocation}"
-                parent.add_child(self)
-                nested_dir = os.path.join("envelopes", parent.name, self.name) # creating the proper file structure: envelopes\parent.name\self.name
-
-            else: 
-                raise ValueError(f"Parent envelope {parent.name} not valid")
-        else: 
-            nested_dir = os.path.join("envelopes", self.name) # since the first doesn't work, it means we are the FIRST folder so its just envelopes\self.name
-            # self.parent = None
-        os.makedirs(nested_dir, exist_ok=True) # actually makes the directy with the proper path
-        self.folder_path = nested_dir         
+        if self.parent != None:
+            file_path = main.find(self.parent)
+            print(f'file path:{file_path}')
+            nested_path = os.path.join(file_path, self.name) 
+            os.makedirs(nested_path, exist_ok=True) # creates directory
+            self.folder_path = nested_path     
+        else:
+            file_path = 'envelopes'
+            print(f'file path:{file_path}')
+            nested_path = os.path.join(file_path, self.name) 
+            os.makedirs(nested_path, exist_ok=True) # creates directory
+            self.folder_path = nested_path    
 
         Envelope.envelope_names.append(self.name)
 
@@ -64,7 +63,6 @@ class Envelope:
 
         # Record the initial allocation as a payment
         allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
-        allocation_pay.record()
 
         # Update user
         print(f"Envelope {self.name} was created in folder '{self.folder_path}'") 
