@@ -1,4 +1,4 @@
-import datetime
+from datetime import date
 import envelope
 import payment
 
@@ -29,7 +29,7 @@ def create_envelope():
 def create_payment():
     name = input("Enter the name of payment's Envelope: ")
     allocation = int(input(f"enter allocation for {name}: "))
-    new_payment = payment.Payment(allocation, datetime.today(), False, False, name)
+    new_payment = payment.Payment(allocation, date.today(), False, False, name)
     new_payment.record()
     
 
