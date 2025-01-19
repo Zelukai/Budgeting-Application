@@ -41,20 +41,28 @@ class Envelope:
     def add_child(self, child): 
         self.children.append(child)
     
-    def record(self): 
 
-        # list of the column headers
-        headersList = ["Envelope ID","Envelope Name","Parent ID","Allocation","Net Running Total","Expenses Running Total"]
+    def record(self): 
+        # Ensure the folder structure exists
+        os.makedirs(self.folder_path, exist_ok=True)
+
+        # Define the list of column headers
+        headersList = ["Amount", "Date", "Envelope"]
+
+        # Create the full path for the CSV file
         csv_file_path = os.path.join(self.folder_path, f'{self.name}.csv')
+
+        # Open the CSV file and write the headers
         with open(csv_file_path, mode='w+', newline="") as file:
             writer = csv.writer(file)
             writer.writerow(headersList)
         
+        # Record the initial allocation as a payment
         allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
         allocation_pay.record()
 
-        # update user
-        print(f"Envelope {self.name} was created") 
+        # Update user
+        print(f"Envelope {self.name} was created in folder '{self.folder_path}'") 
         print(f"Funds allocated: {self.allocation}")
         
 
