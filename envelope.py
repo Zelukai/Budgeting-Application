@@ -12,18 +12,28 @@ class Envelope:
         self.allocation = allocation 
         self.children = children
         self.expense_total = 0 
-        # upon creation, it will call the record function 
+        # creating folder and nesting it in envelopes
+        # nested_dir = os.path.join("envelopes", self.name)
+        # os.makedirs(nested_dir, exist_ok=True)
+        # self.folder_path = nested_dir
 
         if parent: 
             if isinstance(parent, Envelope) and parent.name == self.name: 
                 self.parent = parent
                 parent.add_child(self)
+                nested_dir = os.path.join("envelopes", parent.name, self.name)
+
             else: 
                 raise ValueError(f"Parent envelope {parent.name} not valid")
         else: 
-            self.parent = None
+            nested_dir = os.path.join("envelopes", self.name)
+            # self.parent = None
+        os.makedirs(nested_dir, exist_ok=True)
+        self.folder_path = nested_dir
 
         Envelope.envelope_names.append(self.name)
+
+        # upon creation, it will call the record function 
         self.record() 
 
 
