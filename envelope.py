@@ -17,7 +17,7 @@ class Envelope:
         # list of the column headers
         headersList = ["Envelope ID","Envelope Name","Parent ID","Allocation","Net Running Total","Expenses Running Total"]
         csv_file_path = f'{self.name}.csv'
-        with open(csv_file_path, mode='w', newline="") as file:
+        with open(csv_file_path, mode='w+', newline="") as file:
             writer = csv.writer(file)
             writer.writerow(headersList)
         
