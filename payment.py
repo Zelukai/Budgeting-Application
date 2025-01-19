@@ -1,9 +1,9 @@
 import envelope
-import datetime
+from datetime import date
 import csv
 
 class Payment: 
-    def __init__(self, amount=0, date = datetime.today(), recurring = False, projection = False, envelope = 'total'):
+    def __init__(self, amount=0, date = date.today(), recurring = False, projection = False, envelope = 'total'):
         self.amount = amount
         self.date = date
         self.recurring = recurring
