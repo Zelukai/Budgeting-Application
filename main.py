@@ -1,6 +1,8 @@
 from datetime import date
 import envelope
 import payment
+import pandas as pd
+import os
 
 
 #Lets create a basic UI
@@ -21,7 +23,49 @@ def match_decimal(input_value):
                 return match_decimal(input_value)
             return formatPayment(input_value)
         case _:
-            return formatPayment(input_value)            
+            return formatPayment(input_value)         
+        
+def update_csv_files_deepest_first(base_dir):
+    # Get all folder paths
+    all_folders = []
+    for root, dirs, files in os.walk(base_dir):
+        all_folders.append(root)
+    
+    # Sort folders by depth (deepest folders first)
+    all_folders.sort(key=lambda path: path.count(os.sep), reverse=True)
+    
+    # Dictionary to store combined data for each folder
+    folder_data = {}
+
+    # Process folders starting from the deepest
+    for folder in all_folders:
+        csv_files = [f for f in os.listdir(folder) if f.endswith('.csv')]
+        
+        # Read data from CSV files in the current folder
+        dataframes = []
+        for csv_file in csv_files:
+            file_path = os.path.join(folder, csv_file)
+            df = pd.read_csv(file_path)
+            dataframes.append(df)
+        
+        # Combine data from this folder
+        combined_df = pd.concat(dataframes, ignore_index=True) if dataframes else pd.DataFrame()
+        
+        # Add data from child folders (if any) to this folder's combined data
+        child_folders = [f for f in os.listdir(folder) if os.path.isdir(os.path.join(folder, f))]
+        for child_folder in child_folders:
+            child_path = os.path.join(folder, child_folder)
+            if child_path in folder_data:
+                combined_df = pd.concat([combined_df, folder_data[child_path]], ignore_index=True)
+        
+        # Save combined data back to CSV files in the current folder
+        for csv_file in csv_files:
+            file_path = os.path.join(folder, csv_file)
+            combined_df.to_csv(file_path, index=False)
+        
+        # Store the combined data for this folder for use by parent folders
+        folder_data[folder] = combined_df
+       
             
 
 
@@ -32,6 +76,9 @@ def match_input(cLinput=3):
         case '2':
             create_payment()
         case '3':
+            base_directory = "envelopes"
+            update_csv_files_deepest_first(base_directory)
+        case '4':
             print("Thank you for using this Busy Budgeter! This program is now ending...")
 
 def create_envelope():
@@ -45,16 +92,17 @@ def create_envelope():
 def create_payment():
     name = input("Enter the name of payment's Envelope: ")
     allocation = match_decimal(input(f"enter allocation for {name}: "))
-    new_payment = payment.Payment(allocation, date.today(), False, False, name)    
+    new_payment = payment.Payment(allocation, date.today(), False, False, name)  
+    new_payment.record() 
 
 
 total = envelope.Envelope("total", 5000)
 def main():
     print("Welcome to the Busy Budgeter")
-    print("What would you like to do? \n 1. Create an budgeting envelope \n 2. Enter a new payment \n 3. Exit Program")
+    print("What would you like to do? \n 1. Create an budgeting envelope \n 2. Enter a new payment \n 3. Merge csv Files \n 4. Exit Program")
     cLinput = input()
-    while cLinput not in ('1', '2', '3'):
-        print("Invalid option! Please enter a valid option (1, 2, or 3)")
+    while cLinput not in ('1', '2', '3','4'):
+        print("Invalid option! Please enter a valid option (1, 2, 3, or 4)")
         cLinput = input()
     match_input(cLinput)
 
