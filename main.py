@@ -9,12 +9,19 @@ import envelope
 def match_input(cLinput=3):
     match cLinput:
         case '1':
-            print("Do something")
+            create_envelope()
         case '2':
             print("Do something")
         case '3':
             print("Thank you for using this Busy Budgeter! This program is now ending...")
 
+def create_envelope():
+    name = input("Enter the name of new envelope: ")
+    try:
+        allocation = int(input(f"enter allocation for {name}: "))
+        new_envelope = envelope.Envelope(name, allocation)
+    except ValueError:
+        print("Invalid allocation amount! Please enter a valid integer.")
 
 
 total = envelope.Envelope("total", 5000)
