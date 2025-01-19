@@ -10,7 +10,8 @@ class Envelope:
         self.parent = parent 
         self.allocation = allocation 
         self.children = children
-        self.exp_running_t =  allocation# upon creation, it will call the record function 
+        self.expense_total = 0 
+        # upon creation, it will call the record function 
 
         if parent: 
             if isinstance(parent, Envelope) and parent.name == self.name: 
@@ -43,7 +44,6 @@ class Envelope:
         # update user
         print(f"Envelope {self.name} was created") 
         print(f"Funds allocated: {self.allocation}")
-        print(f"Current total: {self.exp_running_t}")
         
 
     
