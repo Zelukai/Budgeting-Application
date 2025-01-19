@@ -5,11 +5,9 @@ import envelope
 
 #Lets create a basic UI
 
-total = envelope.Envelope("origin", 5000)
-
+total = envelope.Envelope("total", 5000)
 def main():
     while True:
-        total = envelope.Envelope("origin", 5000)
         print("Welcome to the Busy Budgeter")
         print("What would you like to do? \n 1. Create an budgeting envelope \n 2. Enter a new payment \n 3. Exit Program")
         cLinput = input()
