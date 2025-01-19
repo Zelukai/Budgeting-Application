@@ -41,8 +41,8 @@ class Payment:
         # Update the stats based on the payment amount
         if amountToAdd < 0:
             TotalExpenses += abs(amountToAdd)  # Add to expenses
-        else:
-            NetTotal += amountToAdd  # Add to net total
+    
+        NetTotal += amountToAdd  # Add to net total
 
         # Write updated stats back to the CSV
         with open(stats_csv_file_path, mode='w', newline="") as statsfile:
