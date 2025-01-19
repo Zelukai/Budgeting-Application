@@ -4,7 +4,9 @@ import envelope
 
 #Lets create a basic UI
 
-
+def formatPayment(input):
+    formattedInput = f"{input:.2f}"
+    return formattedInput
 
 def match_input(cLinput=3):
     match cLinput:
