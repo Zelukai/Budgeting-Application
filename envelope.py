@@ -1,4 +1,5 @@
 import csv
+import payment
 
 class Envelope: 
     def __init__(self, name:str, allocation:int, parent=None, children=[]): 
@@ -12,15 +13,18 @@ class Envelope:
     def record(self): 
 
         # list of the column headers
-        headersList = ["Name", "Allocation", "Exp_Running_T"]
+        headersList = ["Envelope ID","Envelope Name","Parent ID","Allocation","Net Running Total","Expenses Running Total"]
         csv_file_path = f'{self.name}.csv'
         with open(csv_file_path, mode='w', newline="") as file:
             writer = csv.writer(file)
             writer.writerow(headersList)
+            
+        
 
         # update user
         print(f"Envelope {self.name} was created") 
         print(f"Funds allocated: {self.allocation}")
         print(f"Current total: {self.exp_running_t}")
+        
 
     

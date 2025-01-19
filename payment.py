@@ -1,4 +1,5 @@
 import envelope
+import csv
 
 class Payment: 
     def __init__(self, amount=0, recurring = False, projection = False, envelope = None):
