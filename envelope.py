@@ -1,7 +1,7 @@
 import csv
 import datetime
 import payment
-import datetime
+from datetime import date
 
 class Envelope: 
     def __init__(self, name:str, allocation:int, parent=None, children=[]): 
@@ -21,7 +21,7 @@ class Envelope:
             writer = csv.writer(file)
             writer.writerow(headersList)
         
-        allocation_pay = payment.Payment(self.allocation, datetime.today(), False, False, self.name)
+        allocation_pay = payment.Payment(self.allocation, date.today(), False, False, self.name)
         allocation_pay.payment.record()
 
         # update user
