@@ -17,3 +17,6 @@ def main():
             print("Invalid option! Please enter a valid option (1, 2, or 3)")
             cLinput = input()
         break
+
+if __name__ == "__main__":
+    main()
